@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ImageOrganizer.ViewModels
 {
@@ -43,12 +44,16 @@ namespace ImageOrganizer.ViewModels
             }
         }
 
+        public ICommand StartOrganizationCommand { get; private set; }
 
 
+ 
         public ViewModel()
         {
             this.sourceDirectory = String.Empty;
             this.destinationDirectory = String.Empty;
+
+            StartOrganizationCommand = new StartOrganizationCommand(this);
         }
 
 
@@ -60,6 +65,41 @@ namespace ImageOrganizer.ViewModels
         private void onPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));    
+        }
+
+        public void StartOrganization()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StartOrganizationCommand : ICommand
+    {
+        private ViewModel viewModel;
+
+        public StartOrganizationCommand(ViewModel viewModel)
+        {
+            this.viewModel = viewModel;
+            this.viewModel.PropertyChanged += onCanExecuteChanged;
+        }
+
+        
+
+        public event EventHandler CanExecuteChanged;
+
+        private void onCanExecuteChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);   
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return !(String.IsNullOrWhiteSpace(viewModel.SourceDirectory) || String.IsNullOrWhiteSpace(viewModel.DestinationDirectory));
+        }
+
+        public void Execute(object parameter)
+        {
+            viewModel.StartOrganization();
         }
     }
 }
