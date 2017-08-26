@@ -59,13 +59,13 @@ namespace ImageOrganizer.ViewModels
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
-
 
         private void onPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));    
         }
+
+
 
         public void StartOrganization()
         {
@@ -76,6 +76,8 @@ namespace ImageOrganizer.ViewModels
     public class StartOrganizationCommand : ICommand
     {
         private ViewModel viewModel;
+
+
 
         public StartOrganizationCommand(ViewModel viewModel)
         {
@@ -91,6 +93,8 @@ namespace ImageOrganizer.ViewModels
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);   
         }
+
+
 
         public bool CanExecute(object parameter)
         {
