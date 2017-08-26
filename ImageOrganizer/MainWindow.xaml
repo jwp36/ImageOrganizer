@@ -28,11 +28,11 @@
         </Label>
 
         <TextBox Grid.Column="1" Grid.Row="0"
-                 Text="{Binding SourceDirectory, UpdateSourceTrigger=PropertyChanged}">
+                 Text="{Binding SourceDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
 
         <TextBox Grid.Column="1" Grid.Row="1"
-                 Text="{Binding DestinationDirectory, UpdateSourceTrigger=PropertyChanged}">
+                 Text="{Binding DestinationDirectoryPath, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
 
         <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"

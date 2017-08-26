@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageOrganizer.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,37 +11,37 @@ namespace ImageOrganizer.ViewModels
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private string sourceDirectory;
-        private string destinationDirectory;
+        private string sourceDirectoryPath;
+        private string destinationDirectoryPath;
 
-        public string SourceDirectory
+        public string SourceDirectoryPath
         {
             get
             {
-                return sourceDirectory;
+                return sourceDirectoryPath;
             }
             set
             {
-                if (value == sourceDirectory)
+                if (value == sourceDirectoryPath)
                     return;
                 
-                sourceDirectory = value;
-                onPropertyChanged("SourceDirectory");
+                sourceDirectoryPath = value;
+                onPropertyChanged("SourceDirectoryPath");
             }
         }
-        public string DestinationDirectory
+        public string DestinationDirectoryPath
         {
             get
             {
-                return destinationDirectory;
+                return destinationDirectoryPath;
             }
             set
             {
-                if (value == DestinationDirectory)
+                if (value == DestinationDirectoryPath)
                     return;
 
-                destinationDirectory = value;
-                onPropertyChanged("DestinationDirectory");
+                destinationDirectoryPath = value;
+                onPropertyChanged("DestinationDirectoryPath");
             }
         }
 
@@ -50,8 +51,8 @@ namespace ImageOrganizer.ViewModels
  
         public ViewModel()
         {
-            this.sourceDirectory = String.Empty;
-            this.destinationDirectory = String.Empty;
+            this.sourceDirectoryPath = String.Empty;
+            this.destinationDirectoryPath = String.Empty;
 
             StartOrganizationCommand = new StartOrganizationCommand(this);
         }
@@ -69,7 +70,7 @@ namespace ImageOrganizer.ViewModels
 
         public void StartOrganization()
         {
-            throw new NotImplementedException();
+            Organizer organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
         }
     }
 
@@ -98,7 +99,7 @@ namespace ImageOrganizer.ViewModels
 
         public bool CanExecute(object parameter)
         {
-            return !(String.IsNullOrWhiteSpace(viewModel.SourceDirectory) || String.IsNullOrWhiteSpace(viewModel.DestinationDirectory));
+            return !(String.IsNullOrWhiteSpace(viewModel.SourceDirectoryPath) || String.IsNullOrWhiteSpace(viewModel.DestinationDirectoryPath));
         }
 
         public void Execute(object parameter)
