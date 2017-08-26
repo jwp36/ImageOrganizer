@@ -1,4 +1,5 @@
 ﻿using ImageOrganizer.Models;
+using ImageOrganizer.Validators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,7 +71,7 @@ namespace ImageOrganizer.ViewModels
 
         public void StartOrganization()
         {
-            Organizer organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
+            Organizer organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
         }
     }
 
