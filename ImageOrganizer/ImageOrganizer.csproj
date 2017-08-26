@@ -55,6 +55,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Organizer.cs" />
+    <Compile Include="Validators\DestinationDirectoryValidator.cs" />
+    <Compile Include="Validators\IDirectoryValidator.cs" />
+    <Compile Include="Validators\SourceDirectoryValidator.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
