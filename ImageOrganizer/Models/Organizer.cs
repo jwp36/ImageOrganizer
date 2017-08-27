@@ -27,32 +27,66 @@ namespace ImageOrganizer.Models
 
 
 
+        public event JPGFileFoundEventHandler JPGFileFoundEvent;
+        public event UnsupportedFileFoundEventHandler UnsupportedFileFoundEvent;
+
+        public delegate void UnsupportedFileFoundEventHandler(Organizer organizer, UnsupportedFileFoundEventArgs e);
+        public delegate void JPGFileFoundEventHandler(Organizer organizer, JPGFileFoundEventArgs e);
+
+        //TODO: Allow recursive processing of source directory
         public void Organize()
         {
             sourceDirectoryValidator.Validate(sourceDirectoryPath);
             destinationDirectoryValidator.Validate(destinationDirectoryPath);
 
-            //Validate sourceDir is a Dir
-            //sourceDir must contain contain elements. 
-
-            //If dstDir is not a dir, just make it.
-            //If dstDir is a dir, it must not contain elements.
-
-            //Directory.Exists(sourceDirectoryPath);
-
-            /*
             string[] fileEntries = Directory.GetFiles(sourceDirectoryPath);
             foreach (string fileName in fileEntries)
-                ProcessFile(fileName);
-                */
-
-            //foreach item in source directory
-            //check if supported. 
-            //If supported, raise an event saying a supported image was found.
-
-            //if not supported, raise an event saying an unsupported image was found.
+                processFile(fileName);
 
             return;
+        }
+
+        //TODO: Implement true JPG file detection through file signature analysis
+        private void processFile(string fileName)
+        {
+            if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+            {
+                JPGFileFoundEvent?.Invoke(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+            }
+            else
+            {
+                UnsupportedFileFoundEvent?.Invoke(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+            }
+        }
+    }
+
+
+
+    public class JPGFileFoundEventArgs : EventArgs
+    {
+        public string FileName { get; private set; }
+        public string SourceDirectoryPath { get; private set; }
+        public string DestinationDirectoryPath { get; private set; }
+
+        public JPGFileFoundEventArgs(string fileName, string sourceDirectoryPath, string destinationDirectoryPath)
+        {
+            FileName = fileName;
+            SourceDirectoryPath = sourceDirectoryPath;
+            DestinationDirectoryPath = destinationDirectoryPath;
+        }
+    }
+
+    public class UnsupportedFileFoundEventArgs : EventArgs
+    {      
+        public string FileName { get; private set; }
+        public string SourceDirectoryPath { get; private set; }
+        public string DestinationDirectoryPath { get; private set; }
+
+        public UnsupportedFileFoundEventArgs(string fileName, string sourceDirectoryPath, string destinationDirectoryPath)
+        {
+            FileName = fileName;
+            SourceDirectoryPath = sourceDirectoryPath;
+            DestinationDirectoryPath = destinationDirectoryPath;
         }
     }
 }
