@@ -8,10 +8,12 @@ namespace ImageOrganizerTests
     [TestClass]
     public class DestinationDirectoryValidatorTest
     {
-        private static string emptyTestDirectory = "EmptyTestDirectory";
-        private static string nonEmptyTestDirectory = "NonEmptyTestDirectory";
-        private static string testFile = "TestFile";
+        private static string emptyTestDirectory = "EmptyTestDestinationDirectory";
+        private static string nonEmptyTestDirectory = "NonEmptyTestDestinationDirectory";
+        private static string testFilename = "TestFile";
+        private static FileStream testFile;
         private static DestinationDirectoryValidator destinationDirectoryValidator;
+        
         
 
         [ClassInitialize()]
@@ -19,14 +21,15 @@ namespace ImageOrganizerTests
         {
             Directory.CreateDirectory(emptyTestDirectory);
             Directory.CreateDirectory(nonEmptyTestDirectory);
-            File.Create(Path.Combine(nonEmptyTestDirectory, testFile));
 
+            testFile = File.Create(Path.Combine(nonEmptyTestDirectory, testFilename));
             destinationDirectoryValidator = new DestinationDirectoryValidator();
         }
 
         [ClassCleanup()]
         public static void tearDown()
         {
+            testFile.Close();
             Directory.Delete(emptyTestDirectory);
             Directory.Delete(nonEmptyTestDirectory, true);
         }
