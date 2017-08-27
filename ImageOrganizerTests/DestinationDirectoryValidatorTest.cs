@@ -10,7 +10,7 @@ namespace ImageOrganizerTests
     {
         private static string emptyTestDirectory = "EmptyTestDestinationDirectory";
         private static string nonEmptyTestDirectory = "NonEmptyTestDestinationDirectory";
-        private static string testFilename = "TestFile";
+        private static string testFileName = "TestFile";
         private static FileStream testFile;
         private static DestinationDirectoryValidator destinationDirectoryValidator;
         
@@ -22,7 +22,7 @@ namespace ImageOrganizerTests
             Directory.CreateDirectory(emptyTestDirectory);
             Directory.CreateDirectory(nonEmptyTestDirectory);
 
-            testFile = File.Create(Path.Combine(nonEmptyTestDirectory, testFilename));
+            testFile = File.Create(Path.Combine(nonEmptyTestDirectory, testFileName));
             destinationDirectoryValidator = new DestinationDirectoryValidator();
         }
 
