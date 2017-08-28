@@ -15,8 +15,6 @@ namespace ImageOrganizerTests
         private string sourceDirectoryPath = "SourceDirectory";
         private string destinationDirectoryPath = "DestinationDirectory";
 
-        private delegate void EventListener(Object sender, EventArgs e);
-
         [TestInitialize]
         public void TestInitialize()
         {
