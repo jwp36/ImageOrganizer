@@ -52,6 +52,7 @@
     <Compile Include="OrganizerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceDirectoryValidatorTest.cs" />
+    <Compile Include="UnsupportedFileHandlerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
