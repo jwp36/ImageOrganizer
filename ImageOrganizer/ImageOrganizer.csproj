@@ -55,6 +55,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Organizer.cs" />
+    <Compile Include="Models\UnsupportedFileHandler.cs" />
     <Compile Include="Validators\DestinationDirectoryValidator.cs" />
     <Compile Include="Validators\IDirectoryValidator.cs" />
     <Compile Include="Validators\SourceDirectoryValidator.cs" />
