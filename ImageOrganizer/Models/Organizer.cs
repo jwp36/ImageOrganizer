@@ -53,7 +53,7 @@ namespace ImageOrganizer.Models
             {
                 try
                 {
-                    JPGFileFoundEvent?.Invoke(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                    onJPGFileFound(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
                 }
                 catch (UnsupportedJPGFileException)
                 {

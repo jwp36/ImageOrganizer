@@ -64,5 +64,22 @@ namespace ImageOrganizerTests
             Assert.AreEqual(destinationDirectoryPath, receivedEventArgs.DestinationDirectoryPath);
             Assert.AreEqual(testFileName, receivedEventArgs.FileName);
         }
+
+        [TestMethod]
+        public void ProcessFileShouldFireUnsupportedFileFoundEventWhenFileCausesUnsupportedJPGFileException()
+        {
+            string fileName = "Test.jpg";
+
+            UnsupportedFileFoundEventArgs receivedEventArgs = null;
+
+            organizer.JPGFileFoundEvent += (Organizer organizer, JPGFileFoundEventArgs e) => { throw new UnsupportedJPGFileException(); };
+            organizer.UnsupportedFileFoundEvent += (Organizer organizer, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
+
+            exposedOrganizer.Invoke("processFile", fileName);
+
+            Assert.AreEqual(sourceDirectoryPath, receivedEventArgs.SourceDirectoryPath);
+            Assert.AreEqual(destinationDirectoryPath, receivedEventArgs.DestinationDirectoryPath);
+            Assert.AreEqual(fileName, receivedEventArgs.FileName);
+        }
     }
 }
