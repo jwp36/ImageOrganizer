@@ -51,12 +51,29 @@ namespace ImageOrganizer.Models
         {
             if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
             {
-                JPGFileFoundEvent?.Invoke(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                try
+                {
+                    JPGFileFoundEvent?.Invoke(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                }
+                catch (UnsupportedJPGFileException)
+                {
+                    onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                }
             }
             else
             {
-                UnsupportedFileFoundEvent?.Invoke(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
             }
+        }
+
+        private void onJPGFileFound(Organizer sender, JPGFileFoundEventArgs e)
+        {
+            JPGFileFoundEvent?.Invoke(sender, e);
+        }
+
+        private void onUnsupportedFileFound(Organizer sender, UnsupportedFileFoundEventArgs e)
+        {
+            UnsupportedFileFoundEvent?.Invoke(sender, e);
         }
     }
 
@@ -87,6 +104,13 @@ namespace ImageOrganizer.Models
             FileName = fileName;
             SourceDirectoryPath = sourceDirectoryPath;
             DestinationDirectoryPath = destinationDirectoryPath;
+        }
+    }
+
+    public class UnsupportedJPGFileException : Exception
+    {
+        public UnsupportedJPGFileException()
+        { 
         }
     }
 }
