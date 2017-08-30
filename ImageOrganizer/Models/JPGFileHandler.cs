@@ -20,7 +20,7 @@ namespace ImageOrganizer.Models
             enc = new ASCIIEncoding();
         }
 
-        private void handleJPGFileFoundEvent(Organizer organizer, JPGFileFoundEventArgs e)
+        private void handleJPGFileFoundEvent(object sender, JPGFileFoundEventArgs e)
         {
             string fullSourceFilePath = Path.Combine(e.SourceDirectoryPath, e.FileName);
 

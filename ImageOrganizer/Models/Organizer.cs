@@ -30,8 +30,8 @@ namespace ImageOrganizer.Models
         public event JPGFileFoundEventHandler JPGFileFoundEvent;
         public event UnsupportedFileFoundEventHandler UnsupportedFileFoundEvent;
 
-        public delegate void UnsupportedFileFoundEventHandler(Organizer organizer, UnsupportedFileFoundEventArgs e);
-        public delegate void JPGFileFoundEventHandler(Organizer organizer, JPGFileFoundEventArgs e);
+        public delegate void UnsupportedFileFoundEventHandler(object sender, UnsupportedFileFoundEventArgs e);
+        public delegate void JPGFileFoundEventHandler(object sender, JPGFileFoundEventArgs e);
 
         //TODO: Allow recursive processing of source directory
         public void Organize()
@@ -107,6 +107,7 @@ namespace ImageOrganizer.Models
         }
     }
 
+    [Serializable]
     public class UnsupportedJPGFileException : Exception
     {
         public UnsupportedJPGFileException()

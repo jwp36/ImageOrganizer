@@ -37,7 +37,7 @@ namespace ImageOrganizerTests
             testFileNames.Add(fileNameThatEndsWithLowerCaseJPG);
 
             JPGFileFoundEventArgs receivedEventArgs;
-            organizer.JPGFileFoundEvent += (Organizer sender, JPGFileFoundEventArgs e) => { receivedEventArgs = e; };
+            organizer.JPGFileFoundEvent += (object sender, JPGFileFoundEventArgs e) => { receivedEventArgs = e; };
             
             foreach (string testFileName in testFileNames)
             {
@@ -56,7 +56,7 @@ namespace ImageOrganizerTests
             string testFileName = "Test.txt";
 
             UnsupportedFileFoundEventArgs receivedEventArgs = null;
-            organizer.UnsupportedFileFoundEvent += (Organizer sender, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
+            organizer.UnsupportedFileFoundEvent += (object sender, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
 
             exposedOrganizer.Invoke("processFile", testFileName);
 
@@ -72,8 +72,8 @@ namespace ImageOrganizerTests
 
             UnsupportedFileFoundEventArgs receivedEventArgs = null;
 
-            organizer.JPGFileFoundEvent += (Organizer organizer, JPGFileFoundEventArgs e) => { throw new UnsupportedJPGFileException(); };
-            organizer.UnsupportedFileFoundEvent += (Organizer organizer, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
+            organizer.JPGFileFoundEvent += (object organizer, JPGFileFoundEventArgs e) => { throw new UnsupportedJPGFileException(); };
+            organizer.UnsupportedFileFoundEvent += (object organizer, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
 
             exposedOrganizer.Invoke("processFile", fileName);
 

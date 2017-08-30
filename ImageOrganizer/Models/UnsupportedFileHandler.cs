@@ -17,7 +17,7 @@ namespace ImageOrganizer.Models
             this.organizer.UnsupportedFileFoundEvent += HandleUnsupportedFileFoundEvent;
         }
 
-        private void HandleUnsupportedFileFoundEvent(Organizer organizer, UnsupportedFileFoundEventArgs e)
+        private void HandleUnsupportedFileFoundEvent(object sender, UnsupportedFileFoundEventArgs e)
         {
             string fullSourcePath = Path.Combine(e.SourceDirectoryPath, e.FileName);
             string fullDestinationPath = Path.Combine(e.DestinationDirectoryPath, e.FileName);
