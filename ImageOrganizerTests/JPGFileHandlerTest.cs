@@ -37,21 +37,8 @@ namespace ImageOrganizerTests
         [ClassCleanup]
         public static void ClassCleaup()
         {
-            //Directory.Delete(sourceDirectoryPath, true);
-            //Directory.Delete(destinationDirectoryPath, true);
-        }
-
-        [TestMethod]
-        public void TestMethod1()
-        {
-            //exposedOrganizer.Invoke("processFile", fileName);
-            
-            //assume file is there for now...
-
-            //call process file using privObj organizer
-            
-            //triggers event, which our jpg file handler is listening to
-            
+            Directory.Delete(sourceDirectoryPath, true);
+            Directory.Delete(destinationDirectoryPath, true);
         }
 
         [TestMethod]
@@ -60,7 +47,7 @@ namespace ImageOrganizerTests
             string expectedDateTime = "2015-01-06 10.27.56";
 
             PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));
-            propertyItem.Id = 0x9003;
+            propertyItem.Id = JPGFileHandler.EXIFDateTimeOriginalID;
             propertyItem.Type = 2;
             propertyItem.Value = Encoding.UTF8.GetBytes(expectedDateTime);
             propertyItem.Len = propertyItem.Value.Length;

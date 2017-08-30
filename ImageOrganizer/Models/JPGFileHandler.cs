@@ -8,6 +8,7 @@ namespace ImageOrganizer.Models
 {
     public class JPGFileHandler
     {
+        public static readonly int EXIFDateTimeOriginalID = 0x9003;
         private Organizer organizer;
         private ASCIIEncoding enc;
 
@@ -28,8 +29,8 @@ namespace ImageOrganizer.Models
         {
             try
             {
-                PropertyItem propertyItem = image.GetPropertyItem(0x9003); //what if doesn't exist?
-                return enc.GetString(propertyItem.Value); //Split by space, take first elem, replace : with - 
+                PropertyItem propertyItem = image.GetPropertyItem(EXIFDateTimeOriginalID);
+                return enc.GetString(propertyItem.Value);
             }
             catch (ArgumentException)
             {
