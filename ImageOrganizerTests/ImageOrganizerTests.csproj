@@ -46,9 +46,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DestinationDirectoryValidatorTest.cs" />
+    <Compile Include="JPGFileHandlerTest.cs" />
     <Compile Include="OrganizerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceDirectoryValidatorTest.cs" />
