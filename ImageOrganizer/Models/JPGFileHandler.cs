@@ -15,14 +15,27 @@ namespace ImageOrganizer.Models
         public JPGFileHandler(Organizer organizer)
         {
             this.organizer = organizer;
-            this.organizer.JPGFileFoundEvent += HandleJPGFileFoundEvent;
+            this.organizer.JPGFileFoundEvent += handleJPGFileFoundEvent;
 
             enc = new ASCIIEncoding();
         }
 
-        private void HandleJPGFileFoundEvent(Organizer organizer, JPGFileFoundEventArgs e)
+        private void handleJPGFileFoundEvent(Organizer organizer, JPGFileFoundEventArgs e)
         {
-            throw new NotImplementedException();
+            string fullSourceFilePath = Path.Combine(e.SourceDirectoryPath, e.FileName);
+
+            string imageDate = String.Empty;
+            using (Image image = Image.FromFile(fullSourceFilePath))
+            {
+                imageDate = parseDateFromDateTimeOriginal(parseDateTimeOriginal(image));
+            }
+            
+            string destinationSubdirectory = Path.Combine(e.DestinationDirectoryPath, imageDate);
+            if (!Directory.Exists(destinationSubdirectory))
+                Directory.CreateDirectory(destinationSubdirectory);
+
+            string fullDestinationFilePath = Path.Combine(destinationSubdirectory, e.FileName);
+            File.Copy(fullSourceFilePath, fullDestinationFilePath);
         }
 
         private string parseDateTimeOriginal(Image image)
@@ -37,5 +50,12 @@ namespace ImageOrganizer.Models
                 throw new UnsupportedJPGFileException();
             }
         }
+
+        private string parseDateFromDateTimeOriginal(string dateTimeOriginal)
+        {
+            string date = dateTimeOriginal.Split(' ')[0];
+            return date.Replace(':', '-');
+        }
+
     }
 }

@@ -42,18 +42,29 @@ namespace ImageOrganizerTests
         }
 
         [TestMethod]
+        public void HandleJPGFileFoundEventShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
+        {
+            string fileName = "TestFile.jpg";
+            string date = "2015-10-17";
+            string dateTimeOriginal = "2015:10:17 18:18:11";
+
+            string fullSourcePath = Path.Combine(sourceDirectoryPath, fileName);
+            string fullDestinationPath = Path.Combine(destinationDirectoryPath, date, fileName);
+
+            Image image = createImage(dateTimeOriginal);
+            image.Save(fullSourcePath, ImageFormat.Jpeg);
+
+            JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath);
+            exposedHandler.Invoke("handleJPGFileFoundEvent", organizer, args);
+
+            Assert.IsTrue(File.Exists(fullDestinationPath));
+        }
+
+        [TestMethod]
         public void ParseDateTimeOriginalShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
         {
             string expectedDateTime = "2015-01-06 10.27.56";
-
-            PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));
-            propertyItem.Id = JPGFileHandler.EXIFDateTimeOriginalID;
-            propertyItem.Type = 2;
-            propertyItem.Value = Encoding.UTF8.GetBytes(expectedDateTime);
-            propertyItem.Len = propertyItem.Value.Length;
-
-            Image image = new Bitmap(1, 1);
-            image.SetPropertyItem(propertyItem);
+            Image image = createImage(expectedDateTime);
 
             string actualDateTime = (string)exposedHandler.Invoke("parseDateTimeOriginal", image);
 
@@ -74,6 +85,22 @@ namespace ImageOrganizerTests
                 //MSTest doesn't have a built-in attribute for testing InnerExceptions...
                 Assert.IsInstanceOfType(e.InnerException, typeof(UnsupportedJPGFileException));
             }
+        }
+
+
+
+        private Image createImage(string EXIFDateTime)
+        {
+            PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));
+            propertyItem.Id = JPGFileHandler.EXIFDateTimeOriginalID;
+            propertyItem.Type = 2;
+            propertyItem.Value = Encoding.UTF8.GetBytes(EXIFDateTime);
+            propertyItem.Len = propertyItem.Value.Length;
+
+            Image image = new Bitmap(1, 1);
+            image.SetPropertyItem(propertyItem);
+
+            return image;
         }
     }
 }
