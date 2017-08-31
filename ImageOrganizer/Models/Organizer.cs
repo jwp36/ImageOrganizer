@@ -16,7 +16,13 @@ namespace ImageOrganizer.Models
         private IDirectoryValidator destinationDirectoryValidator;
 
 
-
+        /// <summary>
+        /// Return an Organizer.
+        /// </summary>
+        /// <param name="sourceDirectoryPath"> Absolute path to source directory.</param>
+        /// <param name="destinationDirectoryPath"> Absolute path to destination directory.</param>
+        /// <param name="sourceDirectoryValidator"></param>
+        /// <param name="destinationDirectoryValidator"></param>
         public Organizer(string sourceDirectoryPath, string destinationDirectoryPath, IDirectoryValidator sourceDirectoryValidator, IDirectoryValidator destinationDirectoryValidator)
         {
             this.sourceDirectoryPath = sourceDirectoryPath;
@@ -40,9 +46,12 @@ namespace ImageOrganizer.Models
             destinationDirectoryValidator.Validate(destinationDirectoryPath);
 
             string[] fileEntries = Directory.GetFiles(sourceDirectoryPath);
-            foreach (string fileName in fileEntries)
+            foreach (string filePath in fileEntries)
+            {
+                string fileName = Path.GetFileName(filePath);
                 processFile(fileName);
-
+            }
+                
             return;
         }
 

@@ -3,6 +3,7 @@ using ImageOrganizer.Validators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,7 +72,17 @@ namespace ImageOrganizer.ViewModels
 
         public void StartOrganization()
         {
-            Organizer organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            string fullSourceDirectoryPath = Path.GetFullPath(sourceDirectoryPath);
+            string fullDestinationDirectoryPath = Path.GetFullPath(destinationDirectoryPath);
+
+            Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            JPGFileHandler jpgFileHandler = new JPGFileHandler(organizer);
+            UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
+
+            organizer.Organize();
+
+            sourceDirectoryPath = String.Empty;
+            destinationDirectoryPath = String.Empty;
         }
     }
 
