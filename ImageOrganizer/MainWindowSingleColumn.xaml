@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindowSingleColumn" Height="300" Width="300">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -39,17 +43,39 @@
             Destination Directory:
         </TextBlock>
 
+
+        <!-- Source Directory Text Box and Hint Text -->
+        <TextBlock Grid.Column="0"
+                   Grid.Row="1"
+                   Margin="35,2,30,0"
+                   Text="Absolute path to source directory"
+                   FontStyle="Italic"
+                   Foreground="Gray"
+                   Visibility="{Binding ElementName=sourceDirectoryTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   />
         <TextBox Grid.Column="0"
                  Grid.Row="1" 
                  Margin="30,0,30,0"
+                 Name="sourceDirectoryTextBox"
                  Text="{Binding SourceDirectoryPath, UpdateSourceTrigger=PropertyChanged}"
+                 Background="Transparent"
                  />
 
-
+        <!-- Destination Directory Text Box and Hint Text -->
+        <TextBlock Grid.Column="0"
+                   Grid.Row="3"
+                   Margin="35,2,30,0"
+                   Text="Absolute path to destination directory"
+                   FontStyle="Italic"
+                   Foreground="Gray"
+                   Visibility="{Binding ElementName=destinationDirectoryTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   />
         <TextBox Grid.Column="0"
                  Grid.Row="3"
-                 Margin="30,0,30,0"
+                 Margin="30,0,30,30"
+                 Name="destinationDirectoryTextBox"
                  Text="{Binding DestinationDirectoryPath, UpdateSourceTrigger=PropertyChanged}"
+                 Background="Transparent"
                  />
 
         <Button Grid.Column="0"
