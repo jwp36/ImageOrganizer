@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MainWindowSingleColumn.xaml.cs">
+      <DependentUpon>MainWindowSingleColumn.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\JPGFileHandler.cs" />
     <Compile Include="Models\Organizer.cs" />
     <Compile Include="Models\UnsupportedFileHandler.cs" />
@@ -74,6 +77,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MainWindowSingleColumn.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
