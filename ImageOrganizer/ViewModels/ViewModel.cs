@@ -80,9 +80,6 @@ namespace ImageOrganizer.ViewModels
             UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
 
             organizer.Organize();
-
-            sourceDirectoryPath = String.Empty;
-            destinationDirectoryPath = String.Empty;
         }
     }
 
