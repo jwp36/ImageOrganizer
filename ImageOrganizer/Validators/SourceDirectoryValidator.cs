@@ -9,6 +9,7 @@ namespace ImageOrganizer.Validators
 {
     public class SourceDirectoryValidator : IDirectoryValidator
     {
+        //TODO: Implement handling for exceptions
         public void Validate(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
