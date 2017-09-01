@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace ImageOrganizer.ViewModels
 {
-    public class ViewModel : INotifyPropertyChanged
+    public class OrganizerViewModel : INotifyPropertyChanged
     {
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
@@ -51,7 +51,7 @@ namespace ImageOrganizer.ViewModels
 
 
  
-        public ViewModel()
+        public OrganizerViewModel()
         {
             this.sourceDirectoryPath = String.Empty;
             this.destinationDirectoryPath = String.Empty;
@@ -85,11 +85,11 @@ namespace ImageOrganizer.ViewModels
 
     public class StartOrganizationCommand : ICommand
     {
-        private ViewModel viewModel;
+        private OrganizerViewModel viewModel;
 
 
 
-        public StartOrganizationCommand(ViewModel viewModel)
+        public StartOrganizationCommand(OrganizerViewModel viewModel)
         {
             this.viewModel = viewModel;
             this.viewModel.PropertyChanged += onCanExecuteChanged;

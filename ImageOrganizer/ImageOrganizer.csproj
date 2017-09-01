@@ -64,7 +64,7 @@
     <Compile Include="Validators\DestinationDirectoryValidator.cs" />
     <Compile Include="Validators\IDirectoryValidator.cs" />
     <Compile Include="Validators\SourceDirectoryValidator.cs" />
-    <Compile Include="ViewModels\ViewModel.cs" />
+    <Compile Include="ViewModels\OrganizerViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
