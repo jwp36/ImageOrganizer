@@ -18,7 +18,7 @@ namespace ImageOrganizerTests
         [TestInitialize]
         public void TestInitialize()
         {
-            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
             exposedOrganizer = new PrivateObject(organizer);
         }
 

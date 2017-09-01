@@ -43,7 +43,7 @@ namespace ImageOrganizerTests
         [TestMethod]
         public void HandleUnsupportedFileFoundEventShouldSucceedWhenEventIsFired()
         {
-            Organizer organizer = new Organizer(sourceDirectory, destinationDirectory, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            Organizer organizer = new Organizer(sourceDirectory, destinationDirectory);
             UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
 
             PrivateObject exposedOrganizer = new PrivateObject(organizer);

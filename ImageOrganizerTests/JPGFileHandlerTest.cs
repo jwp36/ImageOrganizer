@@ -27,7 +27,7 @@ namespace ImageOrganizerTests
             Directory.CreateDirectory(sourceDirectoryPath);
             Directory.CreateDirectory(destinationDirectoryPath);
 
-            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
             exposedOrganizer = new PrivateObject(organizer);
 
             handler = new JPGFileHandler(organizer);

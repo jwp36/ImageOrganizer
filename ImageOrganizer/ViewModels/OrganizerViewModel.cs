@@ -15,6 +15,8 @@ namespace ImageOrganizer.ViewModels
     {
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
+        private IDirectoryValidator sourceDirectoryValidator;
+        private IDirectoryValidator destinationDirectoryValidator;
 
         public string SourceDirectoryPath
         {
@@ -39,7 +41,7 @@ namespace ImageOrganizer.ViewModels
             }
             set
             {
-                if (value == DestinationDirectoryPath)
+                if (value == destinationDirectoryPath)
                     return;
 
                 destinationDirectoryPath = value;
@@ -53,9 +55,11 @@ namespace ImageOrganizer.ViewModels
  
         public OrganizerViewModel()
         {
-            this.sourceDirectoryPath = String.Empty;
-            this.destinationDirectoryPath = String.Empty;
+            sourceDirectoryValidator = new SourceDirectoryValidator();
+            destinationDirectoryValidator = new DestinationDirectoryValidator();
 
+            SourceDirectoryPath = String.Empty;
+            DestinationDirectoryPath = String.Empty;
             StartOrganizationCommand = new StartOrganizationCommand(this);
         }
 
@@ -74,8 +78,11 @@ namespace ImageOrganizer.ViewModels
         {
             string fullSourceDirectoryPath = Path.GetFullPath(sourceDirectoryPath);
             string fullDestinationDirectoryPath = Path.GetFullPath(destinationDirectoryPath);
+            
+            sourceDirectoryValidator.Validate(fullSourceDirectoryPath);
+            destinationDirectoryValidator.Validate(fullDestinationDirectoryPath);
 
-            Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath, new SourceDirectoryValidator(), new DestinationDirectoryValidator());
+            Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath);
             JPGFileHandler jpgFileHandler = new JPGFileHandler(organizer);
             UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
 

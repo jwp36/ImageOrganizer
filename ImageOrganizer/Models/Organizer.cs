@@ -12,8 +12,7 @@ namespace ImageOrganizer.Models
     {
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
-        private IDirectoryValidator sourceDirectoryValidator;
-        private IDirectoryValidator destinationDirectoryValidator;
+        
 
 
         /// <summary>
@@ -21,14 +20,10 @@ namespace ImageOrganizer.Models
         /// </summary>
         /// <param name="sourceDirectoryPath"> Absolute path to source directory.</param>
         /// <param name="destinationDirectoryPath"> Absolute path to destination directory.</param>
-        /// <param name="sourceDirectoryValidator"></param>
-        /// <param name="destinationDirectoryValidator"></param>
-        public Organizer(string sourceDirectoryPath, string destinationDirectoryPath, IDirectoryValidator sourceDirectoryValidator, IDirectoryValidator destinationDirectoryValidator)
+        public Organizer(string sourceDirectoryPath, string destinationDirectoryPath)
         {
             this.sourceDirectoryPath = sourceDirectoryPath;
             this.destinationDirectoryPath = destinationDirectoryPath;
-            this.sourceDirectoryValidator = sourceDirectoryValidator;
-            this.destinationDirectoryValidator = destinationDirectoryValidator;
         }
 
 
@@ -42,9 +37,6 @@ namespace ImageOrganizer.Models
         //TODO: Allow recursive processing of source directory
         public void Organize()
         {
-            sourceDirectoryValidator.Validate(sourceDirectoryPath);
-            destinationDirectoryValidator.Validate(destinationDirectoryPath);
-
             string[] fileEntries = Directory.GetFiles(sourceDirectoryPath);
             foreach (string filePath in fileEntries)
             {
