@@ -4,12 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageOrganizer"
+        xmlns:VM="clr-namespace:ImageOrganizer.ViewModels"
         mc:Ignorable="d"
         Title="MainWindowSingleColumn" Height="300" Width="300">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
+        
+    <Window.DataContext>
+        <VM:OrganizerViewModel/>
+    </Window.DataContext>
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -49,6 +54,7 @@
                    Grid.Row="1"
                    Margin="35,2,30,0"
                    Text="Absolute path to source directory"
+                   FontFamily="Segoe UI"
                    FontStyle="Italic"
                    Foreground="Gray"
                    Visibility="{Binding ElementName=sourceDirectoryTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -57,15 +63,32 @@
                  Grid.Row="1" 
                  Margin="30,0,30,0"
                  Name="sourceDirectoryTextBox"
-                 Text="{Binding SourceDirectoryPath, UpdateSourceTrigger=PropertyChanged}"
                  Background="Transparent"
-                 />
+                 Text="{Binding SourceDirectoryPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                 >
+            <Validation.ErrorTemplate>
+                <ControlTemplate>
+                    <StackPanel>
+                        <AdornedElementPlaceholder x:Name="textBox"/>
+
+                        <ItemsControl ItemsSource="{Binding}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ErrorContent}" Foreground="Red"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ControlTemplate>
+            </Validation.ErrorTemplate>
+        </TextBox>
 
         <!-- Destination Directory Text Box and Hint Text -->
         <TextBlock Grid.Column="0"
                    Grid.Row="3"
                    Margin="35,2,30,0"
                    Text="Absolute path to destination directory"
+                   FontFamily="Segoe UI"
                    FontStyle="Italic"
                    Foreground="Gray"
                    Visibility="{Binding ElementName=destinationDirectoryTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -74,9 +97,25 @@
                  Grid.Row="3"
                  Margin="30,0,30,30"
                  Name="destinationDirectoryTextBox"
-                 Text="{Binding DestinationDirectoryPath, UpdateSourceTrigger=PropertyChanged}"
                  Background="Transparent"
-                 />
+                 Text="{Binding DestinationDirectoryPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                 >
+            <Validation.ErrorTemplate>
+                <ControlTemplate>
+                    <StackPanel>
+                        <AdornedElementPlaceholder x:Name="textBox"/>
+
+                        <ItemsControl ItemsSource="{Binding}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ErrorContent}" Foreground="Red"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ControlTemplate>
+            </Validation.ErrorTemplate>
+        </TextBox>
 
         <Button Grid.Column="0"
                 Grid.Row="4"

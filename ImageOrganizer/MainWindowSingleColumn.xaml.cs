@@ -23,7 +23,6 @@ namespace ImageOrganizer
         public MainWindowSingleColumn()
         {
             InitializeComponent();
-            DataContext = new ViewModel();
         }
     }
 }
