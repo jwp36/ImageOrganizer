@@ -2,58 +2,62 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ImageOrganizer.Validators;
 using System.IO;
+using System.Collections.Generic;
 
 namespace ImageOrganizerTests
 {
     [TestClass]
     public class DestinationDirectoryValidatorTest
     {
-        private static string emptyTestDirectory = "EmptyTestDestinationDirectory";
-        private static string nonEmptyTestDirectory = "NonEmptyTestDestinationDirectory";
-        private static string testFileName = "TestFile";
-        private static FileStream testFile;
+        private static string emptyDirectory = typeof(DestinationDirectoryValidatorTest).Name + "EmptyDirectory";
+        private static string nonEmptyDirectory = typeof(DestinationDirectoryValidatorTest).Name + "NonEmptyDirectory";
+        private static string fileName = "TestFile";
+        private static FileStream file;
         private static DestinationDirectoryValidator destinationDirectoryValidator;
-        
-        
 
         [ClassInitialize()]
         public static void setUp(TestContext context)
         {
-            Directory.CreateDirectory(emptyTestDirectory);
-            Directory.CreateDirectory(nonEmptyTestDirectory);
+            Directory.CreateDirectory(emptyDirectory);
+            Directory.CreateDirectory(nonEmptyDirectory);
 
-            testFile = File.Create(Path.Combine(nonEmptyTestDirectory, testFileName));
+            file = File.Create(Path.Combine(nonEmptyDirectory, fileName));
             destinationDirectoryValidator = new DestinationDirectoryValidator();
         }
 
         [ClassCleanup()]
         public static void tearDown()
         {
-            testFile.Close();
-            Directory.Delete(emptyTestDirectory);
-            Directory.Delete(nonEmptyTestDirectory, true);
+            file.Close();
+            Directory.Delete(emptyDirectory);
+            Directory.Delete(nonEmptyDirectory, true);
         }
 
-
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]       
         public void ValidateShouldFailWhenDirectoryDoesNotExist()
         {
-            destinationDirectoryValidator.Validate("BrokenPath");
+            bool isValid = destinationDirectoryValidator.Validate("BrokenPath", out ICollection<string> errors);
+
+            Assert.IsFalse(isValid);
+            Assert.IsTrue(errors.Count == 1);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void ValidateShouldFailWhenDirectoryIsNotEmpty()
         {
-            destinationDirectoryValidator.Validate(nonEmptyTestDirectory);
+            bool isValid = destinationDirectoryValidator.Validate(nonEmptyDirectory, out ICollection<string> errors);
+
+            Assert.IsFalse(isValid);
+            Assert.IsTrue(errors.Count == 1);
         }
 
         [TestMethod]
         public void ValidateShouldSucceedWhenDirectoryExistsAndIsEmpty()
         {
-            destinationDirectoryValidator.Validate(emptyTestDirectory);
+            bool isValid = destinationDirectoryValidator.Validate(emptyDirectory, out ICollection<string> errors);
+
+            Assert.IsTrue(isValid);
+            Assert.IsTrue(errors.Count == 0);
         }
     }
 }
