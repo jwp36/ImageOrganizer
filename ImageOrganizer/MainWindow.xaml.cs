@@ -24,12 +24,7 @@ namespace ImageOrganizer
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new ViewModel();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
+            //DataContext = new OrganizerViewModel();
         }
     }
 }
