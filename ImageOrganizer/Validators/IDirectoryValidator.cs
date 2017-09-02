@@ -8,6 +8,6 @@ namespace ImageOrganizer.Validators
 {
     public interface IDirectoryValidator
     {
-        void Validate(string directoryPath);
+        bool Validate(string directoryPath, out ICollection<string> validationErrors);
     }
 }

@@ -9,14 +9,21 @@ namespace ImageOrganizer.Validators
 {
     public class SourceDirectoryValidator : IDirectoryValidator
     {
-        //TODO: Implement handling for exceptions
-        public void Validate(string directoryPath)
+        public bool Validate(string directoryPath, out ICollection<string> validationErrors)
         {
-            if (!Directory.Exists(directoryPath))
-                throw new ArgumentException();
+            validationErrors = new List<string>();
 
-            if (!Directory.EnumerateFileSystemEntries(directoryPath).Any())
-                throw new ArgumentException();
+            if (!Directory.Exists(directoryPath))
+            {
+                validationErrors.Add("The supplied directory does not exist. Please specify a directory that exists.");
+            }
+            else if (!Directory.EnumerateFileSystemEntries(directoryPath).Any())
+            {
+               validationErrors.Add("The supplied directory is empty. Please specify a non-empty directory.");
+
+            }
+                
+            return validationErrors.Count == 0;
         }
     }
 }
