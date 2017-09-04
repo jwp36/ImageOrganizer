@@ -75,11 +75,14 @@ namespace ImageOrganizerTests
             string fileNameThatEndsWithCapitalJPG = Path.GetRandomFileName() + ".JPG";
             string fileNameThatEndsWithCapitalJPEG = Path.GetRandomFileName() + ".JPEG";
 
-            List<string> filePaths = new List<string>();
-            filePaths.Add(fileNameThatEndsWithCapitalJPEG);
-            filePaths.Add(fileNameThatEndsWithLowerCaseJPEG);
-            filePaths.Add(fileNameThatEndsWithCapitalJPG);
-            filePaths.Add(fileNameThatEndsWithLowerCaseJPG);
+            List<string> filePaths = new List<string>
+            {
+                fileNameThatEndsWithCapitalJPEG,
+                fileNameThatEndsWithLowerCaseJPEG,
+                fileNameThatEndsWithCapitalJPG,
+                fileNameThatEndsWithLowerCaseJPG
+            };
+
             for (int i = 0; i < filePaths.Count; i++)
             {
                 filePaths[0] = Path.GetFullPath(filePaths[0]);

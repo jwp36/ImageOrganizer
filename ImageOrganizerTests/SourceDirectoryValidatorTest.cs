@@ -9,27 +9,29 @@ namespace ImageOrganizerTests
     [TestClass]
     public class SourceDirectoryValidatorTest
     {
-        private static string emptyDirectory = typeof(SourceDirectoryValidatorTest).Name + "EmptyDirectory";
-        private static string nonEmptyDirectory = typeof(SourceDirectoryValidatorTest).Name + "NonEmptyDirectory";
-        private static string fileName = "TestFile";
-        private static FileStream file;
+        private static string emptyDirectory = Path.GetFullPath(typeof(SourceDirectoryValidatorTest).Name + Path.GetRandomFileName());
+        private static string nonEmptyDirectory = Path.GetFullPath(typeof(SourceDirectoryValidatorTest).Name + Path.GetRandomFileName());
+        
         private static SourceDirectoryValidator sourceDirectoryValidator;
         
         [ClassInitialize()]
-        public static void setUp(TestContext context)
+        public static void ClassInitialize(TestContext context)
         {
             Directory.CreateDirectory(emptyDirectory);
             Directory.CreateDirectory(nonEmptyDirectory);
 
-            file = File.Create(Path.Combine(nonEmptyDirectory, fileName));
+            FileStream file;
+            using (file = File.Create(Path.Combine(nonEmptyDirectory, Path.GetRandomFileName())))
+            {
+            }
+
             sourceDirectoryValidator = new SourceDirectoryValidator();
         }
 
         [ClassCleanup()]
-        public static void tearDown()
+        public static void ClassCleanup()
         {
-            file.Close();
-            Directory.Delete(emptyDirectory);
+            Directory.Delete(emptyDirectory, true);
             Directory.Delete(nonEmptyDirectory, true);
         }
         
