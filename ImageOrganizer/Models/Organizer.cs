@@ -13,8 +13,6 @@ namespace ImageOrganizer.Models
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
         
-
-
         /// <summary>
         /// Return an Organizer.
         /// </summary>
@@ -25,45 +23,46 @@ namespace ImageOrganizer.Models
             this.sourceDirectoryPath = sourceDirectoryPath;
             this.destinationDirectoryPath = destinationDirectoryPath;
         }
-
-
-
+        
         public event JPGFileFoundEventHandler JPGFileFoundEvent;
         public event UnsupportedFileFoundEventHandler UnsupportedFileFoundEvent;
 
         public delegate void UnsupportedFileFoundEventHandler(object sender, UnsupportedFileFoundEventArgs e);
         public delegate void JPGFileFoundEventHandler(object sender, JPGFileFoundEventArgs e);
 
-        //TODO: Allow recursive processing of source directory
         public void Organize()
         {
-            string[] fileEntries = Directory.GetFiles(sourceDirectoryPath);
+            string[] fileEntries = Directory.GetFiles(sourceDirectoryPath, "*", SearchOption.AllDirectories);
             foreach (string filePath in fileEntries)
             {
-                string fileName = Path.GetFileName(filePath);
-                processFile(fileName);
+                processFile(filePath);
             }
                 
             return;
         }
 
-        //TODO: Implement true JPG file detection through file signature analysis
-        private void processFile(string fileName)
+        /// <summary>
+        /// Process a file. Fire a JPGFileFound event is a JPG file is found; otherwise fire the UnsupportedFileFound event.
+        /// </summary>
+        /// <param name="filePath">
+        /// Full file path to a file to be processed.
+        /// </param>
+        private void processFile(string filePath)
         {
-            if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || filePath.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
             {
                 try
                 {
-                    onJPGFileFound(this, new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                    onJPGFileFound(this, new JPGFileFoundEventArgs(filePath, destinationDirectoryPath));
                 }
                 catch (UnsupportedJPGFileException)
                 {
-                    onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                    onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
                 }
             }
             else
             {
-                onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath));
+                onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
             }
         }
 
@@ -78,32 +77,36 @@ namespace ImageOrganizer.Models
         }
     }
 
-
-
     public class JPGFileFoundEventArgs : EventArgs
     {
-        public string FileName { get; private set; }
-        public string SourceDirectoryPath { get; private set; }
+        public string FilePath { get; private set; }
         public string DestinationDirectoryPath { get; private set; }
 
-        public JPGFileFoundEventArgs(string fileName, string sourceDirectoryPath, string destinationDirectoryPath)
+        /// <summary>
+        /// Return an instance of JPGFIleFoundEventArgs.
+        /// </summary>
+        /// <param name="filePath">The full path to the file.</param>
+        /// <param name="destinationDirectoryPath">The name of the destination directory.</param>
+        public JPGFileFoundEventArgs(string filePath, string destinationDirectoryPath)
         {
-            FileName = fileName;
-            SourceDirectoryPath = sourceDirectoryPath;
+            FilePath = filePath;
             DestinationDirectoryPath = destinationDirectoryPath;
         }
     }
 
     public class UnsupportedFileFoundEventArgs : EventArgs
     {      
-        public string FileName { get; private set; }
-        public string SourceDirectoryPath { get; private set; }
+        public string FilePath { get; private set; }
         public string DestinationDirectoryPath { get; private set; }
 
-        public UnsupportedFileFoundEventArgs(string fileName, string sourceDirectoryPath, string destinationDirectoryPath)
+        /// <summary>
+        /// Return an instance of UnsupportedFileFOundEventArgs.
+        /// </summary>
+        /// <param name="filePath">The full path to the file.</param>
+        /// <param name="destinationDirectoryPath">The name of the destination directory.</param>
+        public UnsupportedFileFoundEventArgs(string filePath, string destinationDirectoryPath)
         {
-            FileName = fileName;
-            SourceDirectoryPath = sourceDirectoryPath;
+            FilePath = filePath;
             DestinationDirectoryPath = destinationDirectoryPath;
         }
     }

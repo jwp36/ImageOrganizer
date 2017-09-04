@@ -13,54 +13,51 @@ namespace ImageOrganizerTests
     [TestClass]
     public class UnsupportedFileHandlerTest
     {
-        static string sourceDirectory = "SourceDirectoryWithUnsupportedFile";
-        static string destinationDirectory = "DestinationDirectoryWithUnsupportedFile";
-        static string unsupportedFileName = "UnsupportedFile.txt";
-        static string unsupportedFileContent = "Words to be written to the test file.";
+        private static string sourceDirectoryPath = Path.GetFullPath(typeof(UnsupportedFileHandlerTest).Name + "SourceDirectory");
+        private static string destinationDirectoryPath = Path.GetFullPath(typeof(UnsupportedFileHandlerTest).Name + "DestinationDirectory");
+
+        private Organizer organizer;
+        private UnsupportedFileHandler handler;
+        private PrivateObject exposedHandler;
         
-        static string sourceFilePath = Path.Combine(sourceDirectory, unsupportedFileName);
-        static string destinationFilePath = Path.Combine(destinationDirectory, unsupportedFileName);
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext testContext)
+        {
+            Directory.CreateDirectory(sourceDirectoryPath);
+            Directory.CreateDirectory(destinationDirectoryPath);
+        }
+
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+            Directory.Delete(sourceDirectoryPath, true);
+            Directory.Delete(destinationDirectoryPath, true);
+        }
 
         [TestInitialize]
         public void TestInitialize()
         {
-            Directory.CreateDirectory(sourceDirectory);
-            Directory.CreateDirectory(destinationDirectory);
-
-            using (StreamWriter streamWriter = File.CreateText(sourceFilePath))
-            {
-                streamWriter.WriteLine(unsupportedFileContent);
-            }
+            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
+            handler = new UnsupportedFileHandler(organizer);
+            exposedHandler = new PrivateObject(handler);
         }
 
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            Directory.Delete(sourceDirectory, true);
-            Directory.Delete(destinationDirectory, true);
-        }
-    
         [TestMethod]
         public void HandleUnsupportedFileFoundEventShouldSucceedWhenEventIsFired()
         {
-            Organizer organizer = new Organizer(sourceDirectory, destinationDirectory);
-            UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
+            string fileName = Path.GetRandomFileName();
+            string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
 
-            PrivateObject exposedOrganizer = new PrivateObject(organizer);
-            exposedOrganizer.Invoke("processFile", unsupportedFileName);
-
-            byte[] sourceFileHash;
-            byte[] destinationFileHash;
-
-            using (var md5 = MD5.Create())
-            using (var sourceFileStream = File.OpenRead(sourceFilePath))
-            using (var destinationFileStream = File.OpenRead(destinationFilePath))
+            using (StreamWriter streamWriter = File.CreateText(sourceFilePath))
             {
-                sourceFileHash = md5.ComputeHash(sourceFileStream);
-                destinationFileHash = md5.ComputeHash(destinationFileStream);
+                streamWriter.WriteLine(Path.GetRandomFileName());
             }
 
-            Assert.IsTrue(sourceFileHash.SequenceEqual(destinationFileHash));
+            UnsupportedFileFoundEventArgs args = new UnsupportedFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
+            exposedHandler.Invoke("handleUnsupportedFileFoundEvent", organizer, args);
+
+            string fileDestinationPath = Path.Combine(destinationDirectoryPath, fileName);
+            Assert.IsTrue(File.Exists(fileDestinationPath));
         }
     }
 }

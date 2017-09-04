@@ -1,10 +1,9 @@
-﻿using System;
+﻿using ImageOrganizer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ImageOrganizer.Models;
-using ImageOrganizer.Validators;
-using System.IO;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -13,25 +12,18 @@ namespace ImageOrganizerTests
     [TestClass]
     public class JPGFileHandlerTest
     {
-        private static string sourceDirectoryPath = "JPGFileHandlerTest_SourceDirectory";
-        private static string destinationDirectoryPath = "JPGFileHandlerTest_DestinationDirectory";
+        private static string sourceDirectoryPath = Path.GetFullPath(typeof(JPGFileHandlerTest).Name + "SourceDirectory");
+        private static string destinationDirectoryPath = Path.GetFullPath(typeof(JPGFileHandlerTest).Name + "DestinationDirectory");
 
-        static private Organizer organizer;
-        static private PrivateObject exposedOrganizer;
-        static private JPGFileHandler handler;
-        static private PrivateObject exposedHandler;
+        private Organizer organizer;
+        private JPGFileHandler handler;
+        private PrivateObject exposedHandler;
         
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
             Directory.CreateDirectory(sourceDirectoryPath);
             Directory.CreateDirectory(destinationDirectoryPath);
-
-            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
-            exposedOrganizer = new PrivateObject(organizer);
-
-            handler = new JPGFileHandler(organizer);
-            exposedHandler = new PrivateObject(handler);
         }
 
         [ClassCleanup]
@@ -41,6 +33,14 @@ namespace ImageOrganizerTests
             Directory.Delete(destinationDirectoryPath, true);
         }
 
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            organizer = new Organizer(sourceDirectoryPath, destinationDirectoryPath);
+            handler = new JPGFileHandler(organizer);
+            exposedHandler = new PrivateObject(handler);
+        }
+
         [TestMethod]
         public void HandleJPGFileFoundEventShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
         {
@@ -48,16 +48,16 @@ namespace ImageOrganizerTests
             string date = "2015-10-17";
             string dateTimeOriginal = "2015:10:17 18:18:11";
 
-            string fullSourcePath = Path.Combine(sourceDirectoryPath, fileName);
-            string fullDestinationPath = Path.Combine(destinationDirectoryPath, date, fileName);
+            string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
+            string destinationFilePath = Path.Combine(destinationDirectoryPath, date, fileName);
 
             Image image = createImage(dateTimeOriginal);
-            image.Save(fullSourcePath, ImageFormat.Jpeg);
+            image.Save(sourceFilePath, ImageFormat.Jpeg);
 
-            JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(fileName, sourceDirectoryPath, destinationDirectoryPath);
+            JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
             exposedHandler.Invoke("handleJPGFileFoundEvent", organizer, args);
 
-            Assert.IsTrue(File.Exists(fullDestinationPath));
+            Assert.IsTrue(File.Exists(destinationFilePath));
         }
 
         [TestMethod]
@@ -88,7 +88,11 @@ namespace ImageOrganizerTests
         }
 
 
-
+        /// <summary>
+        /// Create an Image with the specified EXIFDateTimeOriginal data.
+        /// </summary>
+        /// <param name="EXIFDateTime">EXIFDateTimeOrignial data to use when creating the Image.</param>
+        /// <returns></returns>
         private Image createImage(string EXIFDateTime)
         {
             PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));

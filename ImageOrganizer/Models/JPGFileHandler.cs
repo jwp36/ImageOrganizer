@@ -22,10 +22,8 @@ namespace ImageOrganizer.Models
 
         private void handleJPGFileFoundEvent(object sender, JPGFileFoundEventArgs e)
         {
-            string fullSourceFilePath = Path.Combine(e.SourceDirectoryPath, e.FileName);
-
             string imageDate = String.Empty;
-            using (Image image = Image.FromFile(fullSourceFilePath))
+            using (Image image = Image.FromFile(e.FilePath))
             {
                 imageDate = parseDateFromDateTimeOriginal(parseDateTimeOriginal(image));
             }
@@ -34,8 +32,8 @@ namespace ImageOrganizer.Models
             if (!Directory.Exists(destinationSubdirectory))
                 Directory.CreateDirectory(destinationSubdirectory);
 
-            string fullDestinationFilePath = Path.Combine(destinationSubdirectory, e.FileName);
-            File.Copy(fullSourceFilePath, fullDestinationFilePath);
+            string destinationFilePath = Path.Combine(destinationSubdirectory, Path.GetFileName(e.FilePath));
+            File.Copy(e.FilePath, destinationFilePath);
         }
 
         private string parseDateTimeOriginal(Image image)

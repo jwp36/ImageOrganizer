@@ -14,15 +14,13 @@ namespace ImageOrganizer.Models
         public UnsupportedFileHandler(Organizer organizer)
         {
             this.organizer = organizer;
-            this.organizer.UnsupportedFileFoundEvent += HandleUnsupportedFileFoundEvent;
+            this.organizer.UnsupportedFileFoundEvent += handleUnsupportedFileFoundEvent;
         }
 
-        private void HandleUnsupportedFileFoundEvent(object sender, UnsupportedFileFoundEventArgs e)
+        private void handleUnsupportedFileFoundEvent(object sender, UnsupportedFileFoundEventArgs e)
         {
-            string fullSourcePath = Path.Combine(e.SourceDirectoryPath, e.FileName);
-            string fullDestinationPath = Path.Combine(e.DestinationDirectoryPath, e.FileName);
-
-            File.Copy(fullSourcePath, fullDestinationPath);
+            string destinationFilePath = Path.Combine(e.DestinationDirectoryPath, Path.GetFileName(e.FilePath));
+            File.Copy(e.FilePath, destinationFilePath);
         }
     }
 }
