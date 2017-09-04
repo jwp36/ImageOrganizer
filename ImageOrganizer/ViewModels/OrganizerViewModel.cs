@@ -33,7 +33,7 @@ namespace ImageOrganizer.ViewModels
                     return;
                 
                 sourceDirectoryPath = value;
-                onPropertyChanged("SourceDirectoryPath");
+                OnPropertyChanged("SourceDirectoryPath");
             }
         }
         public string DestinationDirectoryPath
@@ -48,7 +48,7 @@ namespace ImageOrganizer.ViewModels
                     return;
 
                 destinationDirectoryPath = value;
-                onPropertyChanged("DestinationDirectoryPath");
+                OnPropertyChanged("DestinationDirectoryPath");
             }
         }
 
@@ -83,11 +83,11 @@ namespace ImageOrganizer.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        private void onPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));    
         }
-        private void onErrorsChanged(string propertyName)
+        private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
@@ -97,8 +97,8 @@ namespace ImageOrganizer.ViewModels
             string fullSourceDirectoryPath = Path.GetFullPath(sourceDirectoryPath);
             string fullDestinationDirectoryPath = Path.GetFullPath(destinationDirectoryPath);
 
-            validateDirectoryPath(fullSourceDirectoryPath, sourceDirectoryValidator, "SourceDirectoryPath");
-            validateDirectoryPath(destinationDirectoryPath, destinationDirectoryValidator, "DestinationDirectoryPath");
+            ValidateDirectoryPath(fullSourceDirectoryPath, sourceDirectoryValidator, "SourceDirectoryPath");
+            ValidateDirectoryPath(destinationDirectoryPath, destinationDirectoryValidator, "DestinationDirectoryPath");
 
             if (!HasErrors)
             {
@@ -110,19 +110,19 @@ namespace ImageOrganizer.ViewModels
             }
         }
 
-        private void validateDirectoryPath(string directoryPath, IDirectoryValidator directoryValidator, string propertyName)
+        private void ValidateDirectoryPath(string directoryPath, IDirectoryValidator directoryValidator, string propertyName)
         {
             bool isValid = directoryValidator.Validate(directoryPath, out ICollection<string> errors);
 
             if (!isValid)
             {
                 validationErrors[propertyName] = errors;
-                onErrorsChanged(propertyName);
+                OnErrorsChanged(propertyName);
             }
             else if (validationErrors.ContainsKey(propertyName))
             {
                 validationErrors.Remove(propertyName);
-                onErrorsChanged(propertyName);
+                OnErrorsChanged(propertyName);
             }
         }
     }
@@ -136,14 +136,14 @@ namespace ImageOrganizer.ViewModels
         public StartOrganizationCommand(OrganizerViewModel viewModel)
         {
             this.viewModel = viewModel;
-            this.viewModel.PropertyChanged += onCanExecuteChanged;
+            this.viewModel.PropertyChanged += OnCanExecuteChanged;
         }
 
         
 
         public event EventHandler CanExecuteChanged;
 
-        private void onCanExecuteChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCanExecuteChanged(object sender, PropertyChangedEventArgs e)
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);   
         }

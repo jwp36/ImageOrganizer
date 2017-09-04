@@ -54,7 +54,7 @@ namespace ImageOrganizerTests
             }
 
             UnsupportedFileFoundEventArgs args = new UnsupportedFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
-            exposedHandler.Invoke("handleUnsupportedFileFoundEvent", organizer, args);
+            exposedHandler.Invoke("HandleUnsupportedFileFoundEvent", organizer, args);
 
             string fileDestinationPath = Path.Combine(destinationDirectoryPath, fileName);
             Assert.IsTrue(File.Exists(fileDestinationPath));

@@ -35,7 +35,7 @@ namespace ImageOrganizer.Models
             string[] fileEntries = Directory.GetFiles(sourceDirectoryPath, "*", SearchOption.AllDirectories);
             foreach (string filePath in fileEntries)
             {
-                processFile(filePath);
+                ProcessFile(filePath);
             }
                 
             return;
@@ -47,31 +47,31 @@ namespace ImageOrganizer.Models
         /// <param name="filePath">
         /// Full file path to a file to be processed.
         /// </param>
-        private void processFile(string filePath)
+        private void ProcessFile(string filePath)
         {
             if (filePath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || filePath.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
             {
                 try
                 {
-                    onJPGFileFound(this, new JPGFileFoundEventArgs(filePath, destinationDirectoryPath));
+                    OnJPGFileFound(this, new JPGFileFoundEventArgs(filePath, destinationDirectoryPath));
                 }
                 catch (UnsupportedJPGFileException)
                 {
-                    onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
+                    OnUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
                 }
             }
             else
             {
-                onUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
+                OnUnsupportedFileFound(this, new UnsupportedFileFoundEventArgs(filePath, destinationDirectoryPath));
             }
         }
 
-        private void onJPGFileFound(Organizer sender, JPGFileFoundEventArgs e)
+        private void OnJPGFileFound(Organizer sender, JPGFileFoundEventArgs e)
         {
             JPGFileFoundEvent?.Invoke(sender, e);
         }
 
-        private void onUnsupportedFileFound(Organizer sender, UnsupportedFileFoundEventArgs e)
+        private void OnUnsupportedFileFound(Organizer sender, UnsupportedFileFoundEventArgs e)
         {
             UnsupportedFileFoundEvent?.Invoke(sender, e);
         }

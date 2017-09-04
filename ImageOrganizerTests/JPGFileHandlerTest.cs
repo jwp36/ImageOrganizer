@@ -51,11 +51,11 @@ namespace ImageOrganizerTests
             string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
             string destinationFilePath = Path.Combine(destinationDirectoryPath, date, fileName);
 
-            Image image = createImage(dateTimeOriginal);
+            Image image = CreateImage(dateTimeOriginal);
             image.Save(sourceFilePath, ImageFormat.Jpeg);
 
             JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
-            exposedHandler.Invoke("handleJPGFileFoundEvent", organizer, args);
+            exposedHandler.Invoke("HandleJPGFileFoundEvent", organizer, args);
 
             Assert.IsTrue(File.Exists(destinationFilePath));
         }
@@ -64,9 +64,9 @@ namespace ImageOrganizerTests
         public void ParseDateTimeOriginalShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
         {
             string expectedDateTime = "2015-01-06 10.27.56";
-            Image image = createImage(expectedDateTime);
+            Image image = CreateImage(expectedDateTime);
 
-            string actualDateTime = (string)exposedHandler.Invoke("parseDateTimeOriginal", image);
+            string actualDateTime = (string)exposedHandler.Invoke("ParseDateTimeOriginal", image);
 
             Assert.AreEqual(expectedDateTime, actualDateTime);
         }
@@ -78,7 +78,7 @@ namespace ImageOrganizerTests
 
             try
             {
-                string actualDateTime = (string)exposedHandler.Invoke("parseDateTimeOriginal", image);
+                string actualDateTime = (string)exposedHandler.Invoke("ParseDateTimeOriginal", image);
             }
             catch (Exception e)
             {
@@ -93,7 +93,7 @@ namespace ImageOrganizerTests
         /// </summary>
         /// <param name="EXIFDateTime">EXIFDateTimeOrignial data to use when creating the Image.</param>
         /// <returns></returns>
-        private Image createImage(string EXIFDateTime)
+        private Image CreateImage(string EXIFDateTime)
         {
             PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));
             propertyItem.Id = JPGFileHandler.EXIFDateTimeOriginalID;

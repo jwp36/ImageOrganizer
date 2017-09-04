@@ -94,7 +94,7 @@ namespace ImageOrganizerTests
             foreach (string filePath in filePaths)
             {
                 receivedEventArgs = null;
-                exposedOrganizer.Invoke("processFile", filePath);
+                exposedOrganizer.Invoke("ProcessFile", filePath);
 
                 Assert.AreEqual(filePath, receivedEventArgs.FilePath);
                 Assert.AreEqual(destinationDirectoryPath, receivedEventArgs.DestinationDirectoryPath);
@@ -109,7 +109,7 @@ namespace ImageOrganizerTests
             UnsupportedFileFoundEventArgs receivedEventArgs = null;
             organizer.UnsupportedFileFoundEvent += (object sender, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
 
-            exposedOrganizer.Invoke("processFile", filePath);
+            exposedOrganizer.Invoke("ProcessFile", filePath);
 
             Assert.AreEqual(filePath, receivedEventArgs.FilePath);
             Assert.AreEqual(destinationDirectoryPath, receivedEventArgs.DestinationDirectoryPath);
@@ -125,7 +125,7 @@ namespace ImageOrganizerTests
             organizer.JPGFileFoundEvent += (object organizer, JPGFileFoundEventArgs e) => { throw new UnsupportedJPGFileException(); };
             organizer.UnsupportedFileFoundEvent += (object organizer, UnsupportedFileFoundEventArgs e) => { receivedEventArgs = e; };
             
-            exposedOrganizer.Invoke("processFile", filePath);
+            exposedOrganizer.Invoke("ProcessFile", filePath);
 
             Assert.AreEqual(filePath, receivedEventArgs.FilePath);
             Assert.AreEqual(destinationDirectoryPath, receivedEventArgs.DestinationDirectoryPath);
