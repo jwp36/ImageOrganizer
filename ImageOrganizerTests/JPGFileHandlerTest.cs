@@ -27,7 +27,7 @@ namespace ImageOrganizerTests
         }
 
         [ClassCleanup]
-        public static void ClassCleaup()
+        public static void ClassCleanup()
         {
             Directory.Delete(sourceDirectoryPath, true);
             Directory.Delete(destinationDirectoryPath, true);
@@ -44,12 +44,36 @@ namespace ImageOrganizerTests
         [TestMethod]
         public void HandleJPGFileFoundEventShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
         {
-            string fileName = "TestFile.jpg";
+            string fileName = Path.GetRandomFileName();
             string date = "2015-10-17";
-            string dateTimeOriginal = "2015:10:17 18:18:11";
+            string dateTimeOriginal = "2015:10:17 18:18:11\0";
 
             string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
             string destinationFilePath = Path.Combine(destinationDirectoryPath, date, fileName);
+
+            Image image = CreateImage(dateTimeOriginal);
+            image.Save(sourceFilePath, ImageFormat.Jpeg);
+
+            JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
+            exposedHandler.Invoke("HandleJPGFileFoundEvent", organizer, args);
+
+            Assert.IsTrue(File.Exists(destinationFilePath));
+        }
+
+        [TestMethod]
+        public void HandleJPGFIleFoundEventShouldSucceedWhenRenamingImageWithEXIFDataTimeOriginalData()
+        {
+            handler = new JPGFileHandler(organizer, JPGFileHandler.Naming.EXIFDateTime);
+            exposedHandler = new PrivateObject(handler);
+
+            string fileName = Path.GetRandomFileName() + ".jpg";
+            string dateTimeOriginal = "2015:10:17 18:18:11\0";
+
+            string date = "2015-10-17";
+            string newFileName = "2015-10-17 18.18.11.jpg";
+
+            string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
+            string destinationFilePath = Path.Combine(destinationDirectoryPath, date, newFileName);
 
             Image image = CreateImage(dateTimeOriginal);
             image.Save(sourceFilePath, ImageFormat.Jpeg);
