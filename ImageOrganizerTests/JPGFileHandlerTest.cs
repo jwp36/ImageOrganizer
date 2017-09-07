@@ -68,10 +68,10 @@ namespace ImageOrganizerTests
             exposedHandler = new PrivateObject(handler);
 
             string fileName = Path.GetRandomFileName() + ".jpg";
-            string dateTimeOriginal = "2015:10:17 18:18:11";
+            string dateTimeOriginal = "2015:10:18 18:18:11";
 
-            string date = "2015-10-17";
-            string newFileName = "2015-10-17 18.18.11.jpg";
+            string date = "2015-10-18";
+            string newFileName = "2015-10-18 18.18.11.jpg";
 
             string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
             string destinationFilePath = Path.Combine(destinationDirectoryPath, date, newFileName);
@@ -157,7 +157,6 @@ namespace ImageOrganizerTests
                 Assert.IsInstanceOfType(e.InnerException, typeof(UnsupportedJPGFileException));
             }
         }
-
 
         /// <summary>
         /// Create an Image with the specified EXIFDateTimeOriginal data.
