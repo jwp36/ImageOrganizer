@@ -26,17 +26,18 @@ namespace ImageOrganizer.Models
             enc = new ASCIIEncoding();
         }
 
-        private void HandleJPGFileFoundEvent(object sender, JPGFileFoundEventArgs e)
+        private void HandleJPGFileFoundEvent(object sender, JPGFileFoundEventArgs args)
         {
+            //Determine the file path to the new file
             string fileName = String.Empty;
             string destinationSubdirectory = String.Empty;
-            using (Image image = Image.FromFile(e.FilePath))
+            using (Image image = Image.FromFile(args.FilePath))
             {
-                string dateTimeOriginal = (ParseDateTimeOriginal(image));
+                string dateTimeOriginal = ParseDateTimeOriginal(image);
 
                 //Subdirectory determination
                 string imageDate = ParseDateFromDateTimeOriginal(dateTimeOriginal);
-                destinationSubdirectory = Path.Combine(e.DestinationDirectoryPath, imageDate);
+                destinationSubdirectory = Path.Combine(args.DestinationDirectoryPath, imageDate);
                 if (!Directory.Exists(destinationSubdirectory))
                     Directory.CreateDirectory(destinationSubdirectory);
 
@@ -44,17 +45,36 @@ namespace ImageOrganizer.Models
                 switch (naming)
                 {
                     case Naming.Original:
-                        fileName = Path.GetFileName(e.FilePath);
+                        fileName = Path.GetFileName(args.FilePath);
                         break;
 
                     case Naming.EXIFDateTime:
-                        fileName = GenerateFileNameFromDateTimeOriginal(dateTimeOriginal) + Path.GetExtension(e.FilePath);
+                        fileName = GenerateFileNameFromDateTimeOriginal(dateTimeOriginal) + Path.GetExtension(args.FilePath);
                         break;
                 }
             }
 
             string destinationFilePath = Path.Combine(destinationSubdirectory, fileName);
-            File.Copy(e.FilePath, destinationFilePath);
+            try
+            {
+                File.Copy(args.FilePath, destinationFilePath);
+            }
+            catch (IOException) //File already exists...
+            {
+                string extension = Path.GetExtension(fileName);
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+
+                int suffix = 1;
+                string newFileName = String.Empty;
+                while (File.Exists(destinationFilePath))
+                {
+                    newFileName = String.Format("{0} {1}{2}", fileName, suffix, extension);
+                    destinationFilePath = Path.Combine(destinationSubdirectory, newFileName);
+                    suffix++;
+                }
+
+                File.Copy(args.FilePath, destinationFilePath);
+            }
         }
 
         private string ParseDateTimeOriginal(Image image)

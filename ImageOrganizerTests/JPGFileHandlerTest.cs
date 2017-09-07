@@ -1,6 +1,7 @@
 ﻿using ImageOrganizer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -46,7 +47,7 @@ namespace ImageOrganizerTests
         {
             string fileName = Path.GetRandomFileName();
             string date = "2015-10-17";
-            string dateTimeOriginal = "2015:10:17 18:18:11\0";
+            string dateTimeOriginal = "2015:10:17 18:18:11";
 
             string sourceFilePath = Path.Combine(sourceDirectoryPath, fileName);
             string destinationFilePath = Path.Combine(destinationDirectoryPath, date, fileName);
@@ -61,13 +62,13 @@ namespace ImageOrganizerTests
         }
 
         [TestMethod]
-        public void HandleJPGFIleFoundEventShouldSucceedWhenRenamingImageWithEXIFDataTimeOriginalData()
+        public void HandleJPGFileFoundEventShouldSucceedWhenRenamingImageWithEXIFDataTimeOriginalData()
         {
             handler = new JPGFileHandler(organizer, JPGFileHandler.Naming.EXIFDateTime);
             exposedHandler = new PrivateObject(handler);
 
             string fileName = Path.GetRandomFileName() + ".jpg";
-            string dateTimeOriginal = "2015:10:17 18:18:11\0";
+            string dateTimeOriginal = "2015:10:17 18:18:11";
 
             string date = "2015-10-17";
             string newFileName = "2015-10-17 18.18.11.jpg";
@@ -85,6 +86,52 @@ namespace ImageOrganizerTests
         }
 
         [TestMethod]
+        public void HandleJPGFileFoundEventShouldSucceedWhenRenamingImageAndAFileWithThatFileNameAlreadyExists()
+        {
+            handler = new JPGFileHandler(organizer, JPGFileHandler.Naming.EXIFDateTime);
+            exposedHandler = new PrivateObject(handler);
+
+            List<string> subdirectories = new List<string>
+            {
+                Path.GetRandomFileName(),
+                Path.GetRandomFileName(),
+                Path.GetRandomFileName()
+            };
+
+            string fileName = Path.GetRandomFileName() + ".jpg";
+            string dateTimeOriginal = "2015:10:17 18:18:11";
+            foreach (string subdirectory in subdirectories)
+            {
+                Directory.CreateDirectory(Path.Combine(sourceDirectoryPath, subdirectory));
+
+                string sourceFilePath = Path.Combine(sourceDirectoryPath, subdirectory, fileName);
+
+                Image image = CreateImage(dateTimeOriginal);
+                image.Save(sourceFilePath, ImageFormat.Jpeg);
+                image.Dispose();
+
+                JPGFileFoundEventArgs args = new JPGFileFoundEventArgs(sourceFilePath, destinationDirectoryPath);
+                exposedHandler.Invoke("HandleJPGFileFoundEvent", organizer, args);
+            }
+
+            List<string> newFileNames = new List<string>
+            {
+                "2015-10-17 18.18.11.jpg",
+                "2015-10-17 18.18.11 1.jpg",
+                "2015-10-17 18.18.11 2.jpg"
+            };
+
+            string date = "2015-10-17";
+            foreach (string newFileName in newFileNames)
+            {
+                string destinationFilePath = Path.Combine(destinationDirectoryPath, date, newFileName);
+
+                Assert.IsTrue(File.Exists(destinationFilePath));
+
+            }
+        }
+
+        [TestMethod]
         public void ParseDateTimeOriginalShouldSucceedWhenImageHasEXIFDateTimeOriginalData()
         {
             string expectedDateTime = "2015-01-06 10.27.56";
@@ -92,7 +139,7 @@ namespace ImageOrganizerTests
 
             string actualDateTime = (string)exposedHandler.Invoke("ParseDateTimeOriginal", image);
 
-            Assert.AreEqual(expectedDateTime, actualDateTime);
+            Assert.AreEqual(expectedDateTime + '\0', actualDateTime);
         }
 
         [TestMethod]
@@ -122,7 +169,7 @@ namespace ImageOrganizerTests
             PropertyItem propertyItem = (PropertyItem)FormatterServices.GetSafeUninitializedObject(typeof(PropertyItem));
             propertyItem.Id = JPGFileHandler.EXIFDateTimeOriginalID;
             propertyItem.Type = 2;
-            propertyItem.Value = Encoding.UTF8.GetBytes(EXIFDateTime);
+            propertyItem.Value = Encoding.UTF8.GetBytes(EXIFDateTime + '\0');
             propertyItem.Len = propertyItem.Value.Length;
 
             Image image = new Bitmap(1, 1);
