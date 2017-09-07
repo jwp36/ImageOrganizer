@@ -15,7 +15,7 @@ namespace ImageOrganizer.Models
         private Organizer organizer;
         private ASCIIEncoding enc;
         private Naming naming;
-        
+
         public JPGFileHandler(Organizer organizer, Naming naming = Naming.Original)
         {
             this.organizer = organizer;
@@ -28,33 +28,20 @@ namespace ImageOrganizer.Models
 
         private void HandleJPGFileFoundEvent(object sender, JPGFileFoundEventArgs args)
         {
-            //Determine the file path to the new file
-            string fileName = String.Empty;
-            string destinationSubdirectory = String.Empty;
+            string dateTimeOriginal = String.Empty;
             using (Image image = Image.FromFile(args.FilePath))
             {
-                string dateTimeOriginal = ParseDateTimeOriginal(image);
-
-                //Subdirectory determination
-                string imageDate = ParseDateFromDateTimeOriginal(dateTimeOriginal);
-                destinationSubdirectory = Path.Combine(args.DestinationDirectoryPath, imageDate);
-                if (!Directory.Exists(destinationSubdirectory))
-                    Directory.CreateDirectory(destinationSubdirectory);
-
-                //Filename determination
-                switch (naming)
-                {
-                    case Naming.Original:
-                        fileName = Path.GetFileName(args.FilePath);
-                        break;
-
-                    case Naming.EXIFDateTime:
-                        fileName = GenerateFileNameFromDateTimeOriginal(dateTimeOriginal) + Path.GetExtension(args.FilePath);
-                        break;
-                }
+                dateTimeOriginal = ParseDateTimeOriginal(image);
             }
+           
+            string destinationSubdirectory = GenerateSubdirectoryPath(args, dateTimeOriginal);
+            if (!Directory.Exists(destinationSubdirectory))
+                Directory.CreateDirectory(destinationSubdirectory);
+            
+            string fileName = GenerateFileName(args, dateTimeOriginal);
 
             string destinationFilePath = Path.Combine(destinationSubdirectory, fileName);
+
             try
             {
                 File.Copy(args.FilePath, destinationFilePath);
@@ -75,6 +62,29 @@ namespace ImageOrganizer.Models
 
                 File.Copy(args.FilePath, destinationFilePath);
             }
+        }
+
+        private string GenerateSubdirectoryPath(JPGFileFoundEventArgs args, string dateTimeOriginal)
+        {
+            string imageDate = ParseDateFromDateTimeOriginal(dateTimeOriginal);
+            return Path.Combine(args.DestinationDirectoryPath, imageDate);
+        }
+
+        private string GenerateFileName(JPGFileFoundEventArgs args, string dateTimeOriginal)
+        {
+            string fileName = String.Empty;
+            switch (naming)
+            {
+                case Naming.Original:
+                    fileName = Path.GetFileName(args.FilePath);
+                    break;
+
+                case Naming.EXIFDateTime:
+                    fileName = GenerateFileNameFromDateTimeOriginal(dateTimeOriginal) + Path.GetExtension(args.FilePath);
+                    break;
+            }
+
+            return fileName;
         }
 
         private string ParseDateTimeOriginal(Image image)
