@@ -27,7 +27,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Column="0"
@@ -117,8 +117,25 @@
             </Validation.ErrorTemplate>
         </TextBox>
 
+
+        <StackPanel Grid.Column="0"
+                    Grid.Row="4">
+            <Label Margin="30,0,30,5"
+                   FontFamily="Segoe UI"
+                   FontWeight="Bold"
+                   >
+                Options
+            </Label>
+            <CheckBox Margin="30,0,30,5"
+                      FontFamily="Segoe UI"
+                      IsChecked="{Binding Path=RenameFilesbyDateAndTime, Mode=OneWayToSource}"
+                      >
+                Rename files by date and time
+            </CheckBox>
+        </StackPanel>
+        
         <Button Grid.Column="0"
-                Grid.Row="4"
+                Grid.Row="5"
                 Margin="30, 10, 30, 0"
                 Command="{Binding StartOrganizationCommand}">
             Start

@@ -51,6 +51,11 @@ namespace ImageOrganizer.ViewModels
                 OnPropertyChanged("DestinationDirectoryPath");
             }
         }
+        public bool RenameFilesbyDateAndTime
+        {
+            get;
+            set;
+        }
 
         public ICommand StartOrganizationCommand { get; private set; }
         public bool HasErrors
@@ -94,6 +99,8 @@ namespace ImageOrganizer.ViewModels
 
         public void StartOrganization()
         {
+            JPGFileHandler.Naming namingMode = RenameFilesbyDateAndTime ? JPGFileHandler.Naming.EXIFDateTime : JPGFileHandler.Naming.Original;
+
             string fullSourceDirectoryPath = Path.GetFullPath(sourceDirectoryPath);
             string fullDestinationDirectoryPath = Path.GetFullPath(destinationDirectoryPath);
 
@@ -103,7 +110,7 @@ namespace ImageOrganizer.ViewModels
             if (!HasErrors)
             {
                 Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath);
-                JPGFileHandler jpgFileHandler = new JPGFileHandler(organizer);
+                JPGFileHandler jpgFileHandler = new JPGFileHandler(organizer, namingMode);
                 UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
 
                 organizer.Organize();
