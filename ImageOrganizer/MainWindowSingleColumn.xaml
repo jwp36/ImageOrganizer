@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ImageOrganizer"
         xmlns:VM="clr-namespace:ImageOrganizer.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindowSingleColumn" Height="300" Width="300">
+        Title="MainWindowSingleColumn" Height="320" Width="500">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -22,6 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -134,11 +135,18 @@
             </CheckBox>
         </StackPanel>
         
-        <Button Grid.Column="0"
-                Grid.Row="5"
+        <Button Grid.Column="0" Grid.Row="5"
                 Margin="30, 10, 30, 0"
                 Command="{Binding StartOrganizationCommand}">
             Start
         </Button>
+
+        <ProgressBar Grid.Column="0" Grid.Row="6"
+                     Margin="30, 10, 30, 10"
+                     Height="20"
+                     Minimum="0"
+                     Maximum="100"
+                     Name="progressBar">
+        </ProgressBar>
     </Grid>
 </Window>
