@@ -51,11 +51,7 @@ namespace ImageOrganizer.ViewModels
                 OnPropertyChanged("DestinationDirectoryPath");
             }
         }
-        public bool RenameFilesbyDateAndTime
-        {
-            get;
-            set;
-        }
+        public bool RenameFilesbyDateAndTime { get; set; }
 
         public ICommand StartOrganizationCommand { get; private set; }
         public bool HasErrors
@@ -138,24 +134,18 @@ namespace ImageOrganizer.ViewModels
     {
         private OrganizerViewModel viewModel;
 
-
-
         public StartOrganizationCommand(OrganizerViewModel viewModel)
         {
             this.viewModel = viewModel;
             this.viewModel.PropertyChanged += OnCanExecuteChanged;
         }
-
-        
-
+      
         public event EventHandler CanExecuteChanged;
 
         private void OnCanExecuteChanged(object sender, PropertyChangedEventArgs e)
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);   
         }
-
-
 
         public bool CanExecute(object parameter)
         {
