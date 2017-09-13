@@ -20,10 +20,8 @@ namespace ImageOrganizerTests
             Directory.CreateDirectory(emptyDirectory);
             Directory.CreateDirectory(nonEmptyDirectory);
 
-            FileStream file;
-            using (file = File.Create(Path.Combine(nonEmptyDirectory, Path.GetRandomFileName())))
-            {
-            }
+            FileStream file = File.Create(Path.Combine(nonEmptyDirectory, Path.GetRandomFileName()));
+            file.Close();
 
             sourceDirectoryValidator = new SourceDirectoryValidator();
         }
