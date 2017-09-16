@@ -12,16 +12,18 @@ namespace ImageOrganizer.Models
     {
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
+        private IProgress<int> progress;
         
         /// <summary>
         /// Return an Organizer.
         /// </summary>
         /// <param name="sourceDirectoryPath"> Absolute path to source directory.</param>
         /// <param name="destinationDirectoryPath"> Absolute path to destination directory.</param>
-        public Organizer(string sourceDirectoryPath, string destinationDirectoryPath)
+        public Organizer(string sourceDirectoryPath, string destinationDirectoryPath, IProgress<int> progress = null)
         {
             this.sourceDirectoryPath = sourceDirectoryPath;
             this.destinationDirectoryPath = destinationDirectoryPath;
+            this.progress = progress;
         }
         
         public event JPGFileFoundEventHandler JPGFileFoundEvent;
@@ -32,13 +34,15 @@ namespace ImageOrganizer.Models
 
         public void Organize()
         {
+            int numProcessed = 0;
             string[] fileEntries = Directory.GetFiles(sourceDirectoryPath, "*", SearchOption.AllDirectories);
             foreach (string filePath in fileEntries)
             {
                 ProcessFile(filePath);
+
+                numProcessed++;
+                progress?.Report(numProcessed * 100 / fileEntries.Length);
             }
-                
-            return;
         }
 
         /// <summary>
