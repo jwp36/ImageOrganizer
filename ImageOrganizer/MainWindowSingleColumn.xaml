@@ -146,6 +146,7 @@
                      Height="20"
                      Minimum="0"
                      Maximum="100"
+                     Value="{Binding Progress, Mode=OneWay}"
                      Name="progressBar">
         </ProgressBar>
     </Grid>
