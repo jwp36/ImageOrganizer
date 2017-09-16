@@ -174,13 +174,23 @@ namespace ImageOrganizer.ViewModels
         }
 
         public bool CanExecute(object parameter)
-        {
-            return !(String.IsNullOrWhiteSpace(viewModel.SourceDirectoryPath) || String.IsNullOrWhiteSpace(viewModel.DestinationDirectoryPath));
+        {            
+            return !ViewModelIsBusy() && !OneOrMoreDirectoryPathsAreEmpty();
         }
 
         public void Execute(object parameter)
         {
             viewModel.StartOrganization();
+        }
+
+        private bool ViewModelIsBusy()
+        {
+            return viewModel.Progress > 0 && viewModel.Progress < 100;
+        }
+
+        private bool OneOrMoreDirectoryPathsAreEmpty()
+        {
+            return String.IsNullOrWhiteSpace(viewModel.SourceDirectoryPath) || String.IsNullOrWhiteSpace(viewModel.DestinationDirectoryPath);
         }
     }
 }
