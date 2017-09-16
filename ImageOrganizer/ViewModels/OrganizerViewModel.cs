@@ -16,6 +16,7 @@ namespace ImageOrganizer.ViewModels
     {
         private string sourceDirectoryPath;
         private string destinationDirectoryPath;
+        private int progress;
         private IDirectoryValidator sourceDirectoryValidator;
         private IDirectoryValidator destinationDirectoryValidator;
         
@@ -49,6 +50,18 @@ namespace ImageOrganizer.ViewModels
 
                 destinationDirectoryPath = value;
                 OnPropertyChanged("DestinationDirectoryPath");
+            }
+        }
+        public int Progress
+        {
+            get
+            {
+                return progress;
+            }
+            set
+            {
+                progress = value;
+                OnPropertyChanged("Progress");
             }
         }
         public bool RenameFilesbyDateAndTime { get; set; }
@@ -105,12 +118,20 @@ namespace ImageOrganizer.ViewModels
 
             if (!HasErrors)
             {
-                Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath);
+                Progress<int> progress = new Progress<int>();
+                progress.ProgressChanged += HandleProgressChangedEvent;
+
+                Organizer organizer = new Organizer(fullSourceDirectoryPath, fullDestinationDirectoryPath, progress);
                 JPGFileHandler jpgFileHandler = new JPGFileHandler(organizer, namingMode);
                 UnsupportedFileHandler unsupportedFileHandler = new UnsupportedFileHandler(organizer);
 
-                organizer.Organize();
+                Task.Run(() => organizer.Organize());
             }
+        }
+
+        private void HandleProgressChangedEvent(object sender, int e)
+        {
+            Progress = e;
         }
 
         private void ValidateDirectoryPath(string directoryPath, IDirectoryValidator directoryValidator, string propertyName)
