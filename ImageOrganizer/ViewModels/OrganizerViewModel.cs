@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace ImageOrganizer.ViewModels
 {
@@ -34,7 +35,7 @@ namespace ImageOrganizer.ViewModels
                     return;
                 
                 sourceDirectoryPath = value;
-                OnPropertyChanged("SourceDirectoryPath");
+                OnPropertyChanged();
             }
         }
         public string DestinationDirectoryPath
@@ -49,7 +50,7 @@ namespace ImageOrganizer.ViewModels
                     return;
 
                 destinationDirectoryPath = value;
-                OnPropertyChanged("DestinationDirectoryPath");
+                OnPropertyChanged();
             }
         }
         public int Progress
@@ -60,8 +61,11 @@ namespace ImageOrganizer.ViewModels
             }
             set
             {
+                if (value == progress)
+                    return;
+
                 progress = value;
-                OnPropertyChanged("Progress");
+                OnPropertyChanged();
             }
         }
         public bool RenameFilesbyDateAndTime { get; set; }
@@ -97,15 +101,16 @@ namespace ImageOrganizer.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));    
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 
+ 
         public void StartOrganization()
         {
             JPGFileHandler.Naming namingMode = RenameFilesbyDateAndTime ? JPGFileHandler.Naming.EXIFDateTime : JPGFileHandler.Naming.Original;
