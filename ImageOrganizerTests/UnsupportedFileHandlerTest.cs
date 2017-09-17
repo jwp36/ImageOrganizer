@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ImageOrganizerTests
 {
@@ -19,7 +20,7 @@ namespace ImageOrganizerTests
         private Organizer organizer;
         private UnsupportedFileHandler handler;
         private PrivateObject exposedHandler;
-        
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
@@ -58,6 +59,56 @@ namespace ImageOrganizerTests
 
             string fileDestinationPath = Path.Combine(destinationDirectoryPath, fileName);
             Assert.IsTrue(File.Exists(fileDestinationPath));
+        }
+
+        [TestMethod]
+        public void HandleUnsupportedFileFoundEventShouldWhenFileWithThatFileNameAlreadyExists()
+        {
+            //Set up subdirectories
+            IEnumerable<string> sourceSubdirectories = new List<string>
+            {
+                Path.GetRandomFileName(),
+                Path.GetRandomFileName(),
+                Path.GetRandomFileName()
+            };
+            sourceSubdirectories = sourceSubdirectories.Select(subdir => { return Path.Combine(sourceDirectoryPath, subdir); });
+
+            foreach (string sourceSubdirectory in sourceSubdirectories)
+            {
+                Directory.CreateDirectory(sourceSubdirectory);
+            }
+
+            //Set up filenames
+            string fileName = Path.GetRandomFileName();
+            IEnumerable<string> sourceFilePaths = new List<string>(sourceSubdirectories.Select(subdir => Path.Combine(subdir, fileName)));
+
+            //Set up files and event args
+            List<UnsupportedFileFoundEventArgs> args = new List<UnsupportedFileFoundEventArgs>();
+            foreach (string sourceFilePath in sourceFilePaths)
+            {
+                using (StreamWriter streamWriter = new StreamWriter(sourceFilePath))
+                {
+                    streamWriter.WriteLine(Path.GetRandomFileName());
+                }
+
+                args.Add(new UnsupportedFileFoundEventArgs(sourceFilePath, destinationDirectoryPath));
+            }
+
+            //Trigger the event handler
+            foreach (UnsupportedFileFoundEventArgs arg in args)
+            {
+                exposedHandler.Invoke("HandleUnsupportedFileFoundEvent", organizer, arg);
+            }
+
+            string fileDestinationPath = Path.Combine(destinationDirectoryPath, fileName);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(fileName);
+
+            string renamedFile1DestinationPath = Path.Combine(destinationDirectoryPath, String.Format("{0} 1{1}", fileNameWithoutExtension, extension));
+            string renamedFile2DestinationPath = Path.Combine(destinationDirectoryPath, String.Format("{0} 2{1}", fileNameWithoutExtension, extension));
+            Assert.IsTrue(File.Exists(fileDestinationPath));
+            Assert.IsTrue(File.Exists(renamedFile1DestinationPath));
+            Assert.IsTrue(File.Exists(renamedFile2DestinationPath));
         }
     }
 }
